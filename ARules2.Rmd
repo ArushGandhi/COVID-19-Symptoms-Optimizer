@@ -1,0 +1,76 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+*ARSOM2*
+
+
+```{r}
+setwd("C:/Users/arush/Desktop/Spring 2020/Independent Study/SARS-CoV-2/ARSOM2")
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(xlsx)
+library(tidyverse)
+library(arules)
+```
+
+Unique symptoms
+```{r}
+symps <- read.xlsx("Only_Symptoms.xlsx",sheetIndex = 1)
+head(symps)
+unique(symps$Symptoms)
+symptoms <- data.frame(Symptoms=unique(symps$Symptoms))
+View(symptoms)
+write.xlsx(symptoms,"C:/Users/arush/Desktop/Spring 2020/Independent Study/SARS-CoV-2/ARSOM2/Unique_Symptoms.xlsx")
+```
+
+ARSOM2 
+Recovered
+```{r}
+ARData <- read.csv("C:/Users/arush/Desktop/Spring 2020/Independent Study/SARS-CoV-2/ARSOM2/Matrix a/MatrixA.csv",stringsAsFactors = T)
+tail(ARData)
+#Converting to factors
+for (i in 1:ncol(ARData)) {
+  ARData[,i]<-as.factor(ARData[,i])  
+  }
+head(ARData)
+
+
+#Association rule algorithm with minsup=0.01 and minconf=0.7, taking the whole dataset as training
+ARModel<- apriori(ARData,parameter = list(sup = 0.01, conf = 0.7),appearance = list(rhs=c("Recovered=0"),lhs=c("Gender=1","A1=1","A2=1","A3=1","A4=1","A5=1","A6=1","S1=1","S2=1","S3=1","S4=1","S5=1","S6=1","S7=1","S8=1","S9=1","S10=1","S11=1","S12=1","S13=1","S14=1","S15=1","S16=1","S17=1","S18=1","S19=1","S20=1","S21=1","S22=1","S23=1","S24=1","S25=1","S26=1","S27=1","S28=1","S29=1","S30=1","S31=1","S32=1","S33=1","S34=1","S35=1","S36=1","S37=1","S38=1","S39=1","S40=1","S41=1","S42=1","S43=1","S44=1","S45=1","S46=1","S47=1","S48=1","S49=1","S50=1"), default="none"))
+rules <- sort(ARModel, by="lift")
+a <- inspect(rules)
+write.xlsx(a,"C:/Users/arush/Desktop/Spring 2020/Independent Study/SARS-CoV-2/ARSOM2/Matrix a/PostRules.xlsx")
+
+
+#ARModel<- apriori(ARData,parameter = list(sup = 0.01, conf = 0.7),appearance = list(rhs=c("Recovered=1"),lhs=c("Gender=1","Age.5=1","Age6.18=1","Age19.39=1","Age40.59=1","Age60.79=1","Age.79=1","Fever=1","Cough=1","Throat.pain=1","Fatigue=1","Cold=1","Vomiting=1","Nausea=1","Difficulty.breathing=1","Sore.throat=1","Joint.pain=1","Chills=1","Mild.cough=1","Headache=1","Throat.discomfort=1","Malaise=1","Sputum=1","Pneumonia=1","Back.pain=1","Mild.fever=1","High.fever=1","Sore.body=1","Chest.discomfort=1","Flu.symptoms=1","Reflux=1","Physical.discomfort=1","Tired=1","Myalgia=1","Runny.nose=1","Cough.with.sputum=1","Abdominal.pain=1","Diarrhea=1","Loss.of.appetite=1","Muscle.pain=1","Breathlessness=1","Nasal.discharge=1","Respiratory.distress=1","Sneeze=1","Thirst=1","General.malaise=1","Whole.body.pain=1","Muscle.aches=1","Chest.pain=1","Shortness.of.breath=1","Itchy.throat=1","Dyspnea=1","Difficulty.walking=1","Flu=1","Muscle.cramps=1","Heavy.head=1","Hospitalization=1"), default="none"))
+#rules <- sort(ARModel, by="lift")
+
+
+#ARModel<- apriori(ARData,parameter = list(sup = 0.01, conf = 0.5),appearance = list(rhs=c("X0=0"),lhs=c("X0.1=1","X0.2=1","X0.3=1","X0.4=1","X1=1","X0.5=1","X0.6=1","X1.1=1","X0.7=1","X0.8=1","X0.9=1","X0.10=1","X0.11=1","X0.12=1","X0.13=1","X0.14=1","X0.15=1","X0.16=1","X0.17=1","X0.18=1","X0.19=1","X0.20=1","X0.21=1","X0.22=1","X0.23=1","X0.24=1","X0.25=1","X0.26=1","X0.27=1","X0.28=1","X0.29=1","X0.30=1","X0.31=1","X0.32=1","X0.33=1","X0.34=1","X0.35=1","X0.36=1","X0.37=1","X0.38=1","X0.39=1","X0.40=1","X0.41=1","X0.42=1","X0.43=1","X0.44=1","X0.45=1","X0.46=1","X0.47=1","X0.48=1","X0.49=1","X0.50=1","X0.51=1","X0.52=1","X0.53=1","X0.54=1","X0.55=1"), default="none"))
+#rules <- sort(ARModel, by="lift")
+#a <- inspect(rules)
+
+```
+
+
+Deaths_ARSOM
+```{r}
+ARDeath <- read.csv("C:/Users/arush/Desktop/Spring 2020/Independent Study/SARS-CoV-2/ARSOM2/DeathsARSOM/PreRules2_ARules.csv",stringsAsFactors = T)
+tail(ARDeath)
+#Converting to factors
+for (i in 1:ncol(ARDeath)) {
+  ARDeath[,i]<-as.factor(ARDeath[,i])  
+  }
+head(ARDeath)
+
+
+#Association rule algorithm with minsup=0.01 and minconf=0.7, taking the whole dataset as training
+ARModel<- apriori(ARDeath,parameter = list(sup = 0.5, conf = 0.7),appearance = list(rhs=c("Deaths=1"),lhs=c("Gender=0","Gender=1","A1=0","A2=0","A3=0","A4=0","A5=0","A6=0","S1=0","S2=0","S3=0","S4=0","S5=0","S6=0","S7=0","S8=0","S9=0","S10=0","S11=0","S12=0","S13=0","S14=0","S15=0","S16=0","S17=0","S18=0","S19=0","S20=0","S21=0","S22=0","S23=0","S24=0","S25=0","S26=0","S27=0","S28=0","S29=0","S30=0","S31=0","S32=0","S33=0","S34=0","S35=0","S36=0","S37=0","S38=0","S39=0","S40=0","S41=0","S42=0","S43=0","S44=0","S45=0","S46=0","S47=0","S48=0","S49=0","S50=0"), default="none"))
+rules <- sort(ARModel, by="lift")
+a <- inspect(rules)
+write.xlsx(a,"C:/Users/arush/Desktop/Spring 2020/Independent Study/SARS-CoV-2/ARSOM2/DeathsARSOM/PostRules2.xlsx")
+```
+
